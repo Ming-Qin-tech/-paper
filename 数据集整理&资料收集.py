@@ -353,6 +353,92 @@
 
 
 
+情感极性：
+    英文：glue/sst2 句子级(BERT及其变种)
+    中文：
+    https://github.com/SophonPlus/ChineseNlpCorpus
+        ChnSentiCorp
+            introduction:
+                sentence level
+                ChnSentiCorp 是一个中文情感分析数据集，包含酒店、笔记本电脑和书籍的网购评论。7000 多条酒店评论数据，5000 多条正向评论，2000 多条负向评论。
+                只有0/1两种标注，即正面和负面评价两种
+            year:
+            size:1.7 MiB
+            format:
+                tsv
+                一句话一个标注（0/1）
+
+
+
+        waimai
+            introduction:
+                sentence level
+                某外卖平台的review,正向 4000 条，负向 约 8000 条
+            year：
+            size：0.8 MiB
+            format：
+                csv
+                只有0/1两种标注，即正面和负面评价两种
+
+
+        online_shopping_10_cats
+            introduction:
+                下载地址： 
+                数据概览： 10 个类别（书籍、平板、手机、水果、洗发水、热水器、蒙牛、衣服、计算机、酒店），共 6 万多条评论数据，正、负向评论各约 3 万条
+                推荐实验： 情感/观点/评论 倾向性分析
+                数据来源： 各电商平台，具体不详
+                原数据集： 中文情感分析语料、中文情感分析语料库，网上搜集，具体作者、来源不详
+                加工处理：
+                将 2 份语料整合成 1 份语料
+                将原来零散的 excel, txt 文档，整合成 1 个 统一的 csv 文档
+                去重
+            year:
+            size:4 MiB
+            format:
+                csv
+                比上面两个数据集多了分类标签，如书籍、水果、手机等，共有3个标签。
+
+
+        weibo_senti_100k
+            introduction:
+                数据概览： 10 万多条，带情感标注 新浪微博，正负向评论约各 5 万条
+                推荐实验： 情感/观点/评论 倾向性分析
+                数据来源： 新浪微博
+                原数据集： 新浪微博，情感分析标记语料共12万条，网上搜集，具体作者、来源不详
+                加工处理：
+                将原来的 2 份文档，整合成 1 份 csv 文件
+                编码统一为 UTF-8
+                去重
+            year:
+            size:9.15 MiB
+            format:
+                csv
+                两个标签：文本+分类（0/1）
+        
+        
+
+
+
+
+-----------------------------------------------------------------------
+企业界现状：
+
+
+
+
+
+
+
+
+
+
+
+比赛能达到的准确率：
+    比赛1：
+        有无code：
+
+    比赛2：
+        有无code：
 
 
 
@@ -379,7 +465,93 @@ HMM
 
 
 CRF 
+    A CRF can be considered as a generalization of HMM or we can say that a HMM is a particular case of CRF where constant probabilities are used to model state transitions.
     判别式模型
-        判别式模型 discriminative model 计算条件概率，而生成式模型 generative model 计算联合概率分布。
-
+        判别式模型 discriminative model 计算条件概率，
+            给出x预测y
+        而生成式模型 generative model 计算联合概率分布。
+            给出P（x，y）和x，求使P（x， y）最大的y
     It has been observed that CRF-based learning method was more suitable for mining aspects, opinions and intensifiers (including phrases) in comparison to LHMMs based and statistical methods. 
+
+
+    The task of assigning labels to a set of observation sequences arises in many fields, 
+
+    在很多应用里，我们都希望能够预测相互关联的多个变量。如一个sports team的比赛表现和每位队员的健康状况有关，而队员的健康状况和team的比赛密度安排和行程劳顿程度有关。比赛结果还和士气有关，而士气又反过来影响健康状况。
+
+    可以看出，多个变量彼此内部相关联。用CRF条件随机场来解决此类问题非常有效。
+    有许多类似应用， 如抽取NLP句法，图片区域的划分，DNA链的划分。
+
+    在这些应用中，我们希望根据观测到的特征矢量，来预测一些随机变量。
+
+    1. graphical model
+        graphical model是表示这种相互之间关系的一个自然的做法。graphical model 包括Bayesian 网络，神经网络，factor graphs，马尔科夫随机场等等。 
+    
+    2. 为什么只有有graphical model不够？  -----要删繁就简
+        大多数NLP的应用都期望得到联合概率分布，也就是得到生成模型。
+        A generative model is a model for randomly generating observable data based on given parameters. 
+        生成模型虽然有种种好处，但是也有不少弊端，如输入数据的维度一般很大，并且特征之间有很复杂的依赖关系，所以根据这两者构建一个概率模型很难，即便真的构建出来也会很复杂，很可能过拟合。
+
+        所以不如我们部分忽略这些依赖，CRF只考虑输入临近的数据？
+            如用米饭在盘子上猜一个菜肴，我们很难猜，因为这样的例子太多了。如果告诉你他旁边有扬州面条，扬州烤鸭，扬州里脊，你可能就能猜出这是扬州炒饭了。这就是CRF的原理。至于桌子因这个菜下沉了几微米，空气流动因为这个菜收到了什么影响就不去管了。
+
+            HMM就是忽略的太多了，只利用了米饭和盘子这一个相关信息，没有利用临近信息。
+---------------------------------------------------------------------------
+    CRF如何解决graphical models面临的问题？  （CRF也是一种graphical model）
+        一种解决方法是直接将条件分布model出来，对于分类问题来说这就是所需的全部了。/？/
+        CRF本质上是将classification和graphical modeling的优势结合在一起。将利用大量数据进行预测和利用compactly 多变量数据建模的优势结合起来。
+        
+        /？/从某种角度来说，生成模型和CRF的关系可以类比于朴素贝叶斯和逻辑回归分类。
+        /？/其实多项式逻辑回归模型可以被看作最简单的一种CRF--只有一个输出变量。
+        /*/ 填坑：朴素贝叶斯   逻辑回归
+
+    
+    所以究竟什么是CRF？
+        用来分类和segmenting 结构数据，如序列，树和lattice。CRF尤其适合于对时序数据进行建模（因为时间依赖可以通过各种不同的方式表达），The underlying idea is that of defining a conditional probability distribution over label sequences given a particular observation sequence, rather than a joint distribution over both label and observation sequences. 
+
+        CRF的主要优势是放宽独立假设（the variables don’t depend on each other and they don’t affect each other in any way）取得的。
+    
+    HMM vs CRF  /?/
+        HMM is a generative model and it gives the output directly by modeling the transition matrix based on the training data. The results can be improved by providing more datapoints, but there is no direct control over the output labels. HMM learns the transition probabilities on its own based on the training data provided. Hence if we provide more datapoints, then we can improve the model to include wider variety. CRF is a discriminative model which outputs a confidence measure. This is really useful in most cases because we want to know how sure the model is about the label at that point. This confidence measure can be thresholded to suit various applications. The good thing about confidence measure is that the number of false alarms is low compared to HMM.
+
+        The primary advantage of CRFs over HMMs is their conditional nature, resulting in the relaxation of the independence assumptions required by HMMs. Additionally, CRFs avoid the label bias problem, a weakness exhibited by Markov models based on directed graphical models.
+        /*/ A CRF can be considered as a generalization of HMM or we can say that a HMM is a particular case of CRF where constant probabilities are used to model state transitions. CRFs outperform HMMs on a number of real-world sequence labeling tasks.
+
+        /？/填坑：HMM的：label bias problem（有向图的天生不足，无向图如CRF无此缺点）
+
+        There are many libraries available out there like HCRF, CRFall, CRF++ etc, that have CRF functionalities nicely defined and implemented. You can check them out and see how they work out for your project.
+
+    
+
+---------------------------------------------------------------------------
+https://towardsdatascience.com/implementing-a-linear-chain-conditional-random-field-crf-in-pytorch-16b0b9c4b4ea
+
+code implement for CRF  
+    Over the last few years, CRFs models were combined with LSTMs to get state-of-the-art results. In the NLP community this was considered a rule of thumb for sequence tagging: if you want more accuracy just stack a CRF on top of your LSTM layer and bang ⭐️! You can see some examples here or here.
+
+    In a sequence classification problem, our final objective is to find the probability of a sequence of labels (y) given an input of sequence vectors (X). This is denoted as P(y | X).
+
+    图1：https://app.yinxiang.com/Home.action#n=b36da91d-e2b6-44ae-9a65-ca2d96928dcb&s=s47&ses=4&sh=5&sds=2&x=crf&
+    These are some intuitions of why we use exp:
+        Underflow: When we multiply very small numbers, we get a smaller number which may suffer underflow.
+        Non-negative outputs: All values are mapped between 0 and +inf.
+        Monotonically increasing: It pushes high values up and low values down. This has a similar effect with an argmax operation. More here.
+
+    Now we are going to add new learnable weights to model the chance of a label yk being followed by yk+1. By modelling this, we are creating a dependency between successive labels! Thus, the name linear-chain CRF! In order to do so, we multiply our previous probability by P(yk+1 | yk), for which we can use exponential properties to rewrite it as unary scores U(x, y) plus learnable transition scores T(y, y):
+    图2：https://app.yinxiang.com/Home.action#n=b36da91d-e2b6-44ae-9a65-ca2d96928dcb&s=s47&ses=4&sh=5&sds=2&x=crf&
+
+
+    图3：https://app.yinxiang.com/Home.action#n=b36da91d-e2b6-44ae-9a65-ca2d96928dcb&s=s47&ses=4&sh=5&sds=2&x=crf&
+    Turns out it’s not trivial to compute Z(X) because we have too many nested loops 😖! It’s a sum over all possible combinations over the label set at each timestep. To be more precise, we have ℓ computations over the label set. This give us a time complexity of O(|y|^ℓ).
+    
+    Luckily, we can exploit the recurrent dependencies and use dynamic programming（动态规划） to compute it efficiently 😁! The algorithm that does this is called forward algorithm or backward algorithm — depending on the order that you iterate over the sequence.
+
+
+
+
+
+
+    
+
+
+
+
