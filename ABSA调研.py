@@ -741,7 +741,7 @@ section 大纲：
 
                         提出model： Target-Specific Transformation Networks (TNet)
                 contribution（提升）：
-                    相比于IAN有所提升，但和论文8（AEN）相比差很多
+                    相比于IAN有所提升，但和论文11（AEN）相比差很多
             ------------------------------------------------------------
             论文10：CAN---Constrained Attention Networks for Multi-Aspect Sentiment Analysis(2018)
                 创新思路：
